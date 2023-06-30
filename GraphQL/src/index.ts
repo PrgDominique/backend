@@ -28,7 +28,7 @@ const books = [
 const typeDefs = `#graphql
 
    type Library {
-      id: id
+      id: ID!
       branch: String!
       books: [Book!]
     }
