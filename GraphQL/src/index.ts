@@ -47,8 +47,6 @@ const typeDefs = `#graphql
 
 `
 
-
-
 // Resolver map
 const resolvers = {
   Query: {
