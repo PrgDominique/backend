@@ -2,7 +2,9 @@ import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import 'dotenv/config.js'
 import mongoose from 'mongoose'
-import User from './model.js'
+import { User, UserName } from './model.js'
+import typeDefs from './schema.js'
+import { createUser } from './mutation/createUser.js';
 
 main().catch((err) => console.log(err))
 
@@ -12,32 +14,20 @@ main().catch((err) => console.log(err))
 async function main() {
   await mongoose.connect(process.env.MONGO_URI)
 
-  // Types of schema
-
-  const typeDefs = `#graphql
-  
-  type User {
-    name: String!
-  }
-
-  type Query {
-    users: [User!]!
-  }
-  `
-
   // Resolver map
   const resolvers = {
     Query: {
-      users: async () => {
-        const user = await User.find()
-        return user
-      },
+      users: async () => await User.find(),
+      username: async () => await UserName.find(),
     },
-
+    Mutation: {
+      createUserName: async (_, { name, age }) => createUser(name, age),
+    },
     // Because Book.author returns an object with a "name" field,
     // Apollo Server's default resolver for Author.name will work.
     // We don't need to define one.
   }
+
 
   // Pass schema definition and resolvers to the
   // ApolloServer constructor
